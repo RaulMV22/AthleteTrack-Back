@@ -24,7 +24,14 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
                         throws Exception {
-                http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
+                http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .cors(Customizer.withDefaults())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/", "/login**", "/error**").permitAll()
+                                                .anyRequest().authenticated())
+                                .oauth2Login(Customizer.withDefaults())
+                                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
                 return http.build();
         }

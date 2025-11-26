@@ -17,6 +17,7 @@ com\athletetrack\service\UserService.class
 com\athletetrack\dto\LoginRequest.class
 com\athletetrack\dto\UserDto.class
 com\athletetrack\controller\UserController.class
+com\athletetrack\controller\UsernameCheckController.class
 com\athletetrack\repository\WorkoutRepository.class
 com\athletetrack\dto\EventDto.class
 com\athletetrack\entity\Exercise.class

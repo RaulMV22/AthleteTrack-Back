@@ -1,7 +1,0 @@
-com\athletetrack\controller\UserControllerTest.class
-com\athletetrack\controller\WorkoutControllerTest.class
-com\athletetrack\controller\EventControllerTest.class
-com\athletetrack\controller\AuthControllerTest.class
-com\athletetrack\service\EventServiceTest.class
-com\athletetrack\service\AuthServiceTest.class
-com\athletetrack\service\UserServiceTest.class
