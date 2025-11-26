@@ -11,6 +11,25 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ * JWT (JSON Web Token) utility class for token generation and validation.
+ * 
+ * Configuration:
+ * - jwt.secret: Secret key for signing tokens (must be at least 256 bits for
+ * HS256)
+ * - jwt.expiration: Token expiration time in milliseconds (default: 86400000 =
+ * 24 hours)
+ * 
+ * Security Notes:
+ * 1. The secret key should be a strong, random value in production
+ * 2. Current implementation uses HS256 (HMAC with SHA-256)
+ * 3. Tokens include user ID as subject and username/role as claims
+ * 4. Tokens are stateless - no server-side session storage required
+ * 
+ * IMPORTANT: For production, change the default secret in
+ * application.properties
+ * to a cryptographically secure random string of at least 32 characters.
+ */
 @Component
 public class JwtUtil {
 
@@ -18,7 +37,7 @@ public class JwtUtil {
     private final long expirationMs;
 
     public JwtUtil(@Value("${jwt.secret}") String secret,
-                   @Value("${jwt.expiration:86400000}") long expirationMs) {
+            @Value("${jwt.expiration:86400000}") long expirationMs) {
         // Use the configured secret; if short, Keys.hmacShaKeyFor will still accept it
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.expirationMs = expirationMs;

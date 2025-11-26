@@ -16,33 +16,35 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(unique = true, nullable = false)
     private String email;
-    
+
     @Column(nullable = false)
     private String password;
-    
+
     @Column(nullable = false)
     private String name;
-    
+
     @Column(unique = true, nullable = false, length = 100)
     private String username;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
     private UserRole role = UserRole.USER;
-    
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String avatar;
-    
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
     public enum UserRole {
         USER, ADMIN
     }

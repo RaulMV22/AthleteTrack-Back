@@ -52,23 +52,34 @@ public class EventService {
 
     public EventDto updateEvent(Long id, EventDto dto) {
         return eventRepository.findById(id).map(e -> {
-            if (dto.getTitle() != null) e.setTitle(dto.getTitle());
-            if (dto.getDate() != null) e.setDate(dto.getDate());
-            if (dto.getDateDisplay() != null) e.setDateDisplay(dto.getDateDisplay());
-            if (dto.getLocation() != null) e.setLocation(dto.getLocation());
-            if (dto.getMaxParticipants() != null) e.setMaxParticipants(dto.getMaxParticipants());
-            if (dto.getImage() != null) e.setImage(dto.getImage());
-            if (dto.getCategory() != null) e.setCategory(dto.getCategory());
-            if (dto.getDistance() != null) e.setDistance(dto.getDistance());
-            if (dto.getDifficulty() != null) e.setDifficulty(dto.getDifficulty());
-            if (dto.getDescription() != null) e.setDescription(dto.getDescription());
+            if (dto.getTitle() != null)
+                e.setTitle(dto.getTitle());
+            if (dto.getDate() != null)
+                e.setDate(dto.getDate());
+            if (dto.getDateDisplay() != null)
+                e.setDateDisplay(dto.getDateDisplay());
+            if (dto.getLocation() != null)
+                e.setLocation(dto.getLocation());
+            if (dto.getMaxParticipants() != null)
+                e.setMaxParticipants(dto.getMaxParticipants());
+            if (dto.getImage() != null)
+                e.setImage(dto.getImage());
+            if (dto.getCategory() != null)
+                e.setCategory(dto.getCategory());
+            if (dto.getDistance() != null)
+                e.setDistance(dto.getDistance());
+            if (dto.getDifficulty() != null)
+                e.setDifficulty(dto.getDifficulty());
+            if (dto.getDescription() != null)
+                e.setDescription(dto.getDescription());
             Event saved = eventRepository.save(e);
             return toDto(saved);
         }).orElse(null);
     }
 
     public boolean deleteEvent(Long id) {
-        if (!eventRepository.existsById(id)) return false;
+        if (!eventRepository.existsById(id))
+            return false;
         eventRepository.deleteById(id);
         return true;
     }
@@ -77,11 +88,32 @@ public class EventService {
         return registrationRepository.findEventIdsByUserId(userId);
     }
 
+    /**
+     * Registers a user for an event.
+     * 
+     * This method:
+     * 1. Checks if the user is already registered (prevents duplicates)
+     * 2. Validates that both user and event exist
+     * 3. Creates a new EventRegistration record
+     * 4. Increments the event's participant count
+     * 
+     * The participant count is managed automatically - it starts at 0 for new
+     * events
+     * and increments with each registration. The maxParticipants field can be used
+     * to implement capacity limits (not currently enforced).
+     * 
+     * @param eventId The ID of the event to register for
+     * @param userId  The ID of the user registering
+     * @return true if registration successful, false if already registered or
+     *         validation fails
+     */
     public boolean registerUserToEvent(Long eventId, Long userId) {
-        if (registrationRepository.findByUserIdAndEventId(userId, eventId).isPresent()) return false;
+        if (registrationRepository.findByUserIdAndEventId(userId, eventId).isPresent())
+            return false;
         User user = userRepository.findById(userId).orElse(null);
         Event event = eventRepository.findById(eventId).orElse(null);
-        if (user == null || event == null) return false;
+        if (user == null || event == null)
+            return false;
         EventRegistration reg = new EventRegistration();
         reg.setEvent(event);
         reg.setUser(user);
@@ -93,7 +125,8 @@ public class EventService {
 
     public boolean unregisterUserFromEvent(Long eventId, Long userId) {
         var opt = registrationRepository.findByUserIdAndEventId(userId, eventId);
-        if (opt.isEmpty()) return false;
+        if (opt.isEmpty())
+            return false;
         EventRegistration reg = opt.get();
         registrationRepository.delete(reg);
         Event event = eventRepository.findById(eventId).orElse(null);

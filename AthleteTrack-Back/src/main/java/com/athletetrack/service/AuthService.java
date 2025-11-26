@@ -41,7 +41,8 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest req) {
-        User user = userRepository.findByEmail(req.getEmail()).orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
+        User user = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             throw new RuntimeException("Credenciales inválidas");
         }
@@ -51,7 +52,8 @@ public class AuthService {
     }
 
     public UserDto toDto(User user) {
-        if (user == null) return null;
+        if (user == null)
+            return null;
         UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setEmail(user.getEmail());
@@ -62,6 +64,26 @@ public class AuthService {
         return dto;
     }
 
+    /**
+     * Authenticates a user using a Google ID token.
+     * 
+     * This method:
+     * 1. Decodes the Google ID token (JWT format with 3 parts:
+     * header.payload.signature)
+     * 2. Extracts user information (email, name, picture) from the token payload
+     * 3. Checks if a user with that email already exists
+     * 4. If new user: creates account with Google data and generates unique
+     * username
+     * 5. Returns JWT token for application authentication
+     * 
+     * Note: This is a simplified implementation that decodes the token without full
+     * signature verification.
+     * For production, consider using Google's official token verification library.
+     * 
+     * @param idToken The Google ID token received from the frontend
+     * @return AuthResponse containing user data and JWT token
+     * @throws RuntimeException if token is invalid or processing fails
+     */
     public AuthResponse googleAuth(String idToken) {
         try {
             // Decode Google ID token (format: header.payload.signature)
